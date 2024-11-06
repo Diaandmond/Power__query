@@ -16,11 +16,15 @@ search_ = Table.SelectRows(change_all_columns_type , each List.AnyTrue(List.Tran
 
 ## Remove extra empty column spaces
 
-add_column1_full = Table.AddColumn(add_column0_full, "column1[full]", each if [Data starts] = 1 then [Column1] else if [Data starts] = 2 then [Column2] else null),<br/>
-add_column2_full = Table.AddColumn(add_column1_full,"column2[full]", each if [Data starts] = 1 then [Column2] else if [Data starts] = 2 then [Column3] else null)...<br/>
+add_column1_full = Table.AddColumn(add_column0_full, "column1[full]", each <br/>
+  if [Data starts] = 1 then [Column1] else <br/>
+  if [Data starts] = 2 then [Column2] else null),<br/>
+add_column2_full = Table.AddColumn(add_column1_full,"column2[full]", each <br/>
+  if [Data starts] = 1 then [Column2] else <br/>
+  if [Data starts] = 2 then [Column3] else null)...<br/>
 
-## Index only dublicate values
+## Index only duplicate values
 
---group by all rows, add custom, expand only index. <br/>
+--Group by all rows, add custom, and expand only the index. <br/>
 get_index = Table.AddIndexColumn([All Rows], "Index", 1, 1, Int64.Type)...<br/>
 
