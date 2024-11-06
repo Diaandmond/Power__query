@@ -1,6 +1,7 @@
 # Power_query
 
-##Dynamically expand all columns from file 
+## Dynamically expand all columns from file 
+
 filter_page_only = Table.SelectRows(Source, each ([Kind] = "Page")),
 get_column_names= Table.ColumnNames(filter_page_only [Data]{0}),
 expand_all_columns = Table.ExpandTableColumn(filter_page_only, "Data", get_column_names)...
