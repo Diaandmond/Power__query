@@ -1,4 +1,4 @@
-# Power__query
+# Power_query
 
 ##Dynamically expand all columns from file 
 filter_page_only = Table.SelectRows(Source, each ([Kind] = "Page")),
