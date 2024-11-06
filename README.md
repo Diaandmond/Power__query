@@ -2,14 +2,25 @@
 
 ## Dynamically expand all columns from file 
 
-filter_page_only = Table.SelectRows(Source, each ([Kind] = "Page")),[<br/>]
-get_column_names= Table.ColumnNames(filter_page_only [Data]{0}),
-expand_all_columns = Table.ExpandTableColumn(filter_page_only, "Data", get_column_names)...
+filter_page_only = Table.SelectRows(Source, each ([Kind] = "Page")),<br/>
+get_column_names= Table.ColumnNames(filter_page_only [Data]{0}),<br/>
+expand_all_columns = Table.ExpandTableColumn(filter_page_only, "Data", get_column_names)...<br/>
 
 ## Get column names and search
 
-#"ColumnNames" = Table.ColumnNames(#"Transposed Table3"),
-#"ReplacedValue" = Table.ReplaceValue(#"Transposed Table3", null, "tuščia", Replacer.ReplaceValue, ColumnNames),
-#"ReplacedError"= Table.ReplaceErrorValues(#"ReplacedValue", List.Transform(#"ColumnNames", each {_, "tuščia"}))
-#"Changed Type" = Table.TransformColumnTypes(#"ReplacedError", List.Transform(Table.ColumnNames(#"ReplacedError"), each {_, type text})),
-#"search_" = Table.SelectRows(#"Changed Type", each List.AnyTrue(List.Transform(Record.FieldValues(_), each Text.Contains(_, "1.1")))),
+get_column_names = Table.ColumnNames(#"Transposed Table3"),<br/>
+replace_null = Table.ReplaceValue(#"Transposed Table3", null, "tuščia", Replacer.ReplaceValue, get_column_names),<br/>
+replace_errors= Table.ReplaceErrorValues(replace_null, List.Transform(get_column_names, each {_, "tuščia"}))<br/>
+change_all_columns_type = Table.TransformColumnTypes(replace_errors, List.Transform(Table.ColumnNames(replace_errors), each {_, type TYPE})),<br/>
+search_ = Table.SelectRows(change_all_columns_type , each List.AnyTrue(List.Transform(Record.FieldValues(_), each Text.Contains(_, "SEARCH TEXT"))))...<br/>
+
+## Remove extra empty column spaces
+
+add_column1_full = Table.AddColumn(add_column0_full, "column1[full]", each if [Data starts] = 1 then [Column1] else if [Data starts] = 2 then [Column2] else null),<br/>
+add_column2_full = Table.AddColumn(add_column1_full,"column2[full]", each if [Data starts] = 1 then [Column2] else if [Data starts] = 2 then [Column3] else null)...<br/>
+
+## Index only dublicate values
+
+--group by all rows, add custom, expand only index. <br/>
+get_index = Table.AddIndexColumn([All Rows], "Index", 1, 1, Int64.Type)...<br/>
+
