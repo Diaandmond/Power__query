@@ -6,7 +6,7 @@ filter_page_only = Table.SelectRows(Source, each ([Kind] = "Page")),
 get_column_names= Table.ColumnNames(filter_page_only [Data]{0}),
 expand_all_columns = Table.ExpandTableColumn(filter_page_only, "Data", get_column_names)...
 
-##Get column names and search
+## Get column names and search
 
 #"ColumnNames" = Table.ColumnNames(#"Transposed Table3"),
 #"ReplacedValue" = Table.ReplaceValue(#"Transposed Table3", null, "tuščia", Replacer.ReplaceValue, ColumnNames),
