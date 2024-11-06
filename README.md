@@ -12,7 +12,7 @@ get_column_names = Table.ColumnNames(#"Transposed Table3"),<br/>
 replace_null = Table.ReplaceValue(#"Transposed Table3", null, "tuščia", Replacer.ReplaceValue, get_column_names),<br/>
 replace_errors= Table.ReplaceErrorValues(replace_null, List.Transform(get_column_names, each {_, "tuščia"}))<br/>
 change_all_columns_type = Table.TransformColumnTypes(replace_errors, List.Transform(Table.ColumnNames(replace_errors), each {_, type TYPE})),<br/>
-search_ = Table.SelectRows(change_all_columns_type , each List.AnyTrue(List.Transform(Record.FieldValues(_), each Text.Contains(_, "SEARCH TEXT"))))...<br/>
+search_ = Table.SelectRows( , each List.AnyTrue(List.Transform(Record.FieldValues(_), each Text.Contains(_, ""))))...<br/>
 
 ## Remove extra empty column spaces
 
