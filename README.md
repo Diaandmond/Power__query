@@ -3,8 +3,14 @@
 ## Dynamically expand all columns from file 
 
 filter_page_only = Table.SelectRows(Source, each ([Kind] = "Page")),<br/>
-get_column_names= Table.ColumnNames(filter_page_only [Data]{0}),<br/>
-expand_all_columns = Table.ExpandTableColumn(filter_page_only, "Data", get_column_names)...<br/>
+#"Removed Other Columns" = Table.SelectColumns(filter_page_only,{"Data"}),<br/>
+#"AddColumnWithColumnNames" = Table.AddColumn(#"Removed Other Columns", "ColumnNames", each if Type.Is(Value.Type([Data]), type table) then Table.ColumnNames([Data]) else {}),<br/>
+#"AddColumnWithColumnNamesCount" = Table.AddColumn(#"AddColumnWithColumnNames", "ColumnNamesCount", each List.Count([ColumnNames])),<br/>
+#"Added Index" = Table.AddIndexColumn(AddColumnWithColumnNamesCount, "Index", 1, 1, Int64.Type),<br/>
+#"SortedTable" = Table.Sort(#"Added Index", {{"ColumnNamesCount", Order.Descending}}),<br/>
+Index = SortedTable{0}[Index],<br/>
+#"ColumnNames"= Table.ColumnNames(#"Removed Other Columns"[Data]{Index-1}),<br/>
+#"Expanded Data" = Table.ExpandTableColumn(#"Removed Other Columns", "Data", ColumnNames)<br/>
 
 ## Get column names and search
 
